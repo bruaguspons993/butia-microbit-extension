@@ -18,6 +18,9 @@
         "src/hardware/light-sensor-butia.ts",
         "src/main.ts",
         "src/robotdriver.ts",
+        "src/sim/protocol.ts",
+        "src/sim/sim-distance-sensor.ts",
+        "src/sim/sim.ts",
         "src/types/components.d.ts",
         "src/types/enums.d.ts",
         "src/types/robot.d.ts",
@@ -36,5 +39,5 @@
         "microbit"
     ],
     "preferredEditor": "blocksprj",
-    "simUrl": "https://github.com/butia4/butia-microbit-extension"
+    "simUrl": "https://bruaguspons993.github.io/butia-microbit-extension"
 }

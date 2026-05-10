@@ -18,10 +18,4 @@ interface IRobot {
     readDistanceSensor(connector: IConnector): number
     readGraySensor(connector: IConnector): number
     readLightSensor(connector: IConnector): number
-    readButton(connector: IConnector): boolean
-    startMonitoring(sensor: number, pin: number, threshold: number): void
-    onLevelReached(sensor: number, pin: number, handler: () => void): void
-    onLevelUnreached(sensor: number, pin: number, handler: () => void): void
-    startMonitoringButton(pin: number): void
-    onButton(pin: number, handler: () => void): void
 }

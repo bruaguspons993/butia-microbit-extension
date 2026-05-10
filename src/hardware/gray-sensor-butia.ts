@@ -1,30 +1,20 @@
 class GraySensor implements IGraySensor {
-    private _lastGray: number;
-    private _pinTrigger: DigitalPin|AnalogPin;
+    private _pinTrigger: DigitalPin | AnalogPin;
 
-    constructor(pinTrigger: DigitalPin|AnalogPin) {
-        this._pinTrigger=pinTrigger;
-        this._lastGray = 0;
+    constructor(pinTrigger: DigitalPin | AnalogPin) {
+        this._pinTrigger = pinTrigger;
     }
-    
-    // Returns the last cached distance — safe to call at any time without triggering hardware.
-    getLastValue(): number {
-        return this._lastGray;
-    }
-    getPin(): number{
+
+    getPin(): number {
         return this._pinTrigger;
     }
+
     read(): number {
-        let raw = 1023 - pins.analogReadPin(this._pinTrigger);
-        let value = (raw / 1023) * 100;
+        const raw = 1023 - pins.analogReadPin(this._pinTrigger);
+        const value = (raw / 1023) * 100;
         return Math.round(value * 10) / 10;
     }
-    
-    poll(): void {
-        control.fail("Method not implemented");
-    } 
-    init(): void {
-        control.fail("Method not implemented");
-    }
 
+    poll(): void {}
+    init(): void {}
 }

@@ -11,11 +11,6 @@ interface IPolledSensor extends ISensor {
     getPin(): number
 }
 
-interface ILineSensor extends IPolledSensor {
-    readLeft(): boolean
-    readRight(): boolean
-}
-
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface IDistanceSensor extends IPolledSensor {}
 

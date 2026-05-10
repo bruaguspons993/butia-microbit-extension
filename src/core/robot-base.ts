@@ -11,6 +11,7 @@ namespace Butia {
         private _motorLeft: number;
         private _motorRight: number;
         private _pinUsage: { pin: AnalogPin | DigitalPin; type: string }[];
+        private _assists: number;
         // --- Constructor ---
         constructor(
             motors: IMotorDriver,
@@ -24,6 +25,7 @@ namespace Butia {
             this._motorLeft = 0;
             this._motorRight = 0;
             this._pinUsage = [];
+            this._assists = 0;
         }
 
         // --- Private helpers ---
@@ -101,7 +103,7 @@ namespace Butia {
         // --- Movement ---
         moveForward(speed: number, duration?: number): void {
             this._setMotorSpeed(speed, speed);
-            if (duration) {
+            if (duration !== undefined) {
                 basic.pause(duration);
                 this._setMotorSpeed(0, 0);
             }
@@ -151,45 +153,48 @@ namespace Butia {
             return s.read();
         }
 
-        // --- Events ---
-        onLevelReached(sensor: number, pin: number, handler: () => void): void {
-            control.onEvent(3194, sensor * 1000 + pin * 100 + 1, handler);
-        }
-
-        onLevelUnreached(sensor: number, pin: number, handler: () => void): void {
-            control.onEvent(3194, sensor * 1000 + pin * 100, handler);
-        }
-
-        onButton(pin: number, handler: () => void): void {
-            control.onEvent(3194, 3 * 1000 + pin * 100 + 1, handler);
-        }
-
         // --- Getters ---
         public motorLeft(): number { return this._motorLeft; }
         public motorRight(): number { return this._motorRight; }
 
-        // --- Overridable stubs ---
-        start(): void {}
-
-        setSimDrivers(_line: ILineSensor, _distance: IDistanceSensor): void {
-            control.fail("Method not implemented");
+        // --- Template Method hooks (override in subclasses for sim) ---
+        protected _pollActiveSensors(): void {}
+        protected _currentObstacleDistance(): number {
+            if (this._distances.length > 0) return this._distances[0].sensor.read();
+            return -1;
         }
 
-        setAssist(_flag: RobotAssist, _enabled: boolean): void {
-            control.fail("Method not implemented");
+        // --- Polling loop ---
+        start(): void {
+            control.inBackground(() => {
+                while (true) {
+                    for (const entry of this._distances) {
+                        entry.sensor.poll();
+                    }
+                    this._pollActiveSensors();
+                    this._applyAssists();
+                    basic.pause(POLL_INTERVAL_MS);
+                }
+            });
         }
 
-        readButton(_connector: IConnector): boolean {
-            control.fail("Method not implemented");
-            return false;
+        private _applyAssists(): void {
+            if (!(this._assists & RobotAssist.ObstacleStop)) return;
+            const dist = this._currentObstacleDistance();
+            if (dist > 0 && dist <= OBSTACLE_STOP_DISTANCE_CM) {
+                if (this._motorLeft > 0 || this._motorRight > 0) {
+                    this._setMotorSpeed(0, 0);
+                }
+            }
         }
 
-        startMonitoring(_sensor: number, _pin: number, _threshold: number): void {
-            control.fail("Method not implemented");
+        setAssist(flag: RobotAssist, enabled: boolean): void {
+            if (enabled) {
+                this._assists |= flag;
+            } else {
+                this._assists &= ~flag;
+            }
         }
 
-        startMonitoringButton(_pin: number): void {
-            control.fail("Method not implemented");
-        }
     }
 }

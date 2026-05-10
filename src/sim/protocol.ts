@@ -9,15 +9,11 @@ interface ButiaSimStateMessage {
     deviceId: number
     motorLeft: number
     motorRight: number
-    lineUsed: boolean
-    sonarUsed: boolean
 }
 
 interface ButiaSensorsMessage {
     type: "sensors"
     id: string
     deviceId: number
-    lineLeft: number
-    lineRight: number
     distance: number
 }

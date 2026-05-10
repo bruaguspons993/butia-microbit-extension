@@ -66,14 +66,6 @@ namespace Butia {
         return Butia.RobotDriver.getCurrentRobot().readLightSensor(connector);
     }
 
-    //% blockId="butia_imp_read_button"
-    //% block="Botón en %connector presionado"
-    //% weight=68
-    //% group="Sensores"
-    export function readButton(connector: Butia.Connector): boolean {
-        return Butia.RobotDriver.getCurrentRobot().readButton(connector);
-    }
-
     //% blockId="butia_imp_distance"
     //% block="Sensor de Distancia en %connector"
     //% weight=69

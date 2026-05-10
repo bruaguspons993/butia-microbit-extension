@@ -18,7 +18,9 @@ namespace Butia {
     //% fixedInstance whenUsed block="J5"
     export const J5 = new ButiaV4Connector("J5");
 
-    class ButiaRobot extends RobotBase {
+    export class ButiaRobot extends RobotBase {
+        private _simDist: IDistanceSensor | null = null;
+
         constructor() {
             super(
                 new GPIOMotorDriver(
@@ -33,10 +35,24 @@ namespace Butia {
                     new ConnectorPin(J5, AnalogPin.P10),
                 ]);
         }
+
+        setSimDrivers(distance: IDistanceSensor): void {
+            this._simDist = distance;
+        }
+
+        protected _pollActiveSensors(): void {
+            if (this._simDist) this._simDist.poll();
+        }
+
+        protected _currentObstacleDistance(): number {
+            if (this._simDist) return this._simDist.read();
+            return super._currentObstacleDistance();
+        }
+
         start(): void {
-            //registerSim()
+            registerSim();
             super.start();
-            //startSendSimLoop()
+            startSendSimLoop();
         }
     }
 
