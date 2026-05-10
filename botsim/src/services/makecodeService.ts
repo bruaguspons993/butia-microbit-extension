@@ -7,6 +7,7 @@ type MessagePacket = { srcFrameIndex?: number; channel: string; data: ArrayBuffe
 type DebuggerMsg = { subtype: string }
 
 let currRunId: string | undefined
+let mkIframe: HTMLIFrameElement | null = null
 
 function stopSim() {
     const sim = Simulation.instance
@@ -25,8 +26,9 @@ function restartSim() {
 }
 
 function postMessagePacket(msg: unknown) {
+    if (!mkIframe?.contentWindow) return
     const payload = new TextEncoder().encode(JSON.stringify(msg))
-    window.parent.postMessage(
+    mkIframe.contentWindow.postMessage(
         {
             type: "messagepacket",
             channel: "butia",
@@ -105,7 +107,8 @@ function handleStopMessage(_msg: unknown) {
     stopSim()
 }
 
-export function init() {
+export function init(iframe: HTMLIFrameElement) {
+    mkIframe = iframe
     window.addEventListener("message", (ev) => {
         if (ev.data?.source?.startsWith("react-devtools")) return
         if (ev.data?.type?.startsWith("webpack")) return
