@@ -2,7 +2,7 @@
   "name": "@butia/botsim",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://butia4.github.io/butia-microbit-extension",
+  "homepage": "https://bruaguspons993.github.io/butia-microbit-extension",
   "dependencies": {
     "@pixi-essentials/gradients": "^1.0.1",
     "@types/node": "^16.18.61",
